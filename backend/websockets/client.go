@@ -12,6 +12,7 @@ type Client struct {
 	Username string
 	Pool *Pool
 	mu    sync.Mutex
+	RoomId  string
 }
 
 
