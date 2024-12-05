@@ -57,13 +57,13 @@ func listenWs(pool *mywebsockets.Pool, w http.ResponseWriter, r *http.Request) {
 	
 	pool.Register <- client
 	client.Read()
+	log.Printf("New WebSocket connection established. Username: %s, RoomID: %s\n", username, roomID)
 }
 
 func listenRoutes() {
 	log.Println("Backend is up")
 	pool := mywebsockets.NewPool()
 	go pool.Start()
-
 	// WebSocket connection handler
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		listenWs(pool, w, r)
