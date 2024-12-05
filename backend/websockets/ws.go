@@ -12,12 +12,12 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 }
 
-func upgraderFunction(w http.ResponseWriter, r *http.Request) (*websocket.Conn, error){
+func UpgraderFunction(w http.ResponseWriter, r *http.Request) (*websocket.Conn, error){
 	upgrader.CheckOrigin = func(r *http.Request) bool {return true}    // for handling cors 
 
 	connection, err := upgrader.Upgrade(w, r, nil);
 	if err != nil {
-		log.Println("Error occured",err)
+		log.Println("Error occured in upgraderFunction",err)
 		return nil, err
 	}
 	return connection, nil
