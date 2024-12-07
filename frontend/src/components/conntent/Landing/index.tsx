@@ -2,8 +2,27 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { MessageCircle, Users, Zap } from 'lucide-react'
+import { useEffect, useState } from "react"
+import { connection, sendMsg } from "@/api"
 
 export default function Landing() {
+  const [roomId, setRoomId] = useState()
+  const [username, setUsername] = useState("")
+  const [messages, setMessages] = useState<string[]>([]);
+
+  useEffect(() => {
+      connection((msg: string) => {
+        setMessages((prev: any) => [...prev, msg])
+      })
+  }, [])
+
+  function handleCreateRoom() {
+      sendMsg("Created room");
+  }
+
+  function handleJoinRoom() {
+    sendMsg(`Room id ${roomId}`)
+  }
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary">
       {/* Hero Section */}
@@ -32,14 +51,18 @@ export default function Landing() {
                 placeholder="Enter Room ID (5 characters)" 
                 className="text-center"
                 maxLength={5}
+                value={roomId}
+                onChange={(e: any) => setRoomId(e.target.value)}
               />
               <Input 
                 placeholder="Enter Username (max 10 characters)" 
                 className="text-center"
                 maxLength={10}
+                value={username}
+                onChange={(e: any) => setUsername(e.target.value)}
               />
               <div className="space-y-2">
-                <Button className="w-full" size="lg">
+                <Button className="w-full" size="lg" onClick={handleJoinRoom}>
                   Join Room
                 </Button>
                 <div className="relative">
@@ -52,7 +75,7 @@ export default function Landing() {
                     </span>
                   </div>
                 </div>
-                <Button className="w-full" variant="outline" size="lg">
+                <Button onClick={handleCreateRoom} className="w-full" variant="outline" size="lg">
                   Create Room
                 </Button>
               </div>

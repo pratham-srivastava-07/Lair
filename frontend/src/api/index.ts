@@ -1,8 +1,8 @@
-import WebSocket from "ws";
+// import WebSocket from "ws";
 
 const socket = new WebSocket('ws://localhost:9000/ws')
 
-let connection = (cb: (m: any) => {}) => {
+let connection = (cb: (m: any) => void) => {
     console.log('connecting')
 
     socket.onopen = () => {
