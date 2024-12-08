@@ -33,7 +33,7 @@ func (pool *Pool) Start() {
 				err := c.Conn.WriteJSON(Message{Type: 1, Body: fmt.Sprintf("%s joined the room", client.Username)}); // captures any error while joining the user
 				c.mu.Unlock();
 				if err != nil {
-					fmt.Printf("Error happened while connecting", err)
+					fmt.Println("Error happened while connecting", err)
 				}
 				fmt.Printf("%s joined the room", client.Username)
 			}

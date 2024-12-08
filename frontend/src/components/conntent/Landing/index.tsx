@@ -6,7 +6,7 @@ import { useEffect, useState } from "react"
 import { connection, sendMsg } from "@/api"
 
 export default function Landing() {
-  const [roomId, setRoomId] = useState()
+  const [roomId, setRoomId] = useState("")
   const [username, setUsername] = useState("")
   const [messages, setMessages] = useState<string[]>([]);
 
@@ -15,10 +15,32 @@ export default function Landing() {
         setMessages((prev: any) => [...prev, msg])
       })
   }, [])
+//   useEffect(() => {
+//     connection((msg: any) => {
+//         const parsedMessage = JSON.parse(msg.data);
+//         if (parsedMessage.type === "room_created") {
+//             console.log("Room created with ID:", parsedMessage.body);
+//             setRoomId(parsedMessage.body); // Update the state with the room ID
+//         } else {
+//             setMessages((prev) => [...prev, parsedMessage.body]);
+//         }
+//     });
+// }, []);
 
-  function handleCreateRoom() {
-      sendMsg("Created room");
-  }
+async function handleCreateRoom() {
+  sendMsg("create_room") // Trigger server-side room creation
+
+  // Wait for the server response with the room ID
+  connection((msg: any) => {
+    const parsedMessage = JSON.parse(msg.data)
+    if (parsedMessage.type === 1) { // Assuming type 1 indicates "room created"
+      console.log("Room created with ID:", parsedMessage.body)
+      setRoomId(parsedMessage.body) // Update state with the room ID
+    } else {
+      setMessages((prev) => [...prev, parsedMessage.body])
+    }
+  })
+}
 
   function handleJoinRoom() {
     sendMsg(`Room id ${roomId}`)

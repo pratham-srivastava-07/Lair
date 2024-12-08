@@ -35,7 +35,7 @@ func GenerateRoomID() string {
 	return string(result)
 }
 // creates a room when clicked on create room
-func (rm *RoomManager) CreatesRoom() string {
+func (rm *RoomManager) CreatesRoom(client *Client) string {
 	rm.mu.Lock()
 	defer rm.mu.Unlock()
 
@@ -46,8 +46,19 @@ func (rm *RoomManager) CreatesRoom() string {
 				ID: roomId,
 				Clients: make(map[*Client]bool),
 			}
-			fmt.Println(roomId);
-			return roomId
+			// notify client here 
+			mes  := Message{
+				Type: 1,
+				Body: roomId,
+				Sender: "Server",
+			}
+			err := client.Conn.WriteJSON(mes)
+			if err != nil {
+				fmt.Println("Error sending room ID to client:", err)
+			}
+			
+			fmt.Println("Room created with ID:", roomId)
+			return roomId // Return the created room ID
 		}
 	}
 }
