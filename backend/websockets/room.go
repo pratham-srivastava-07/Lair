@@ -46,6 +46,7 @@ func (rm *RoomManager) CreatesRoom() string {
 				ID: roomId,
 				Clients: make(map[*Client]bool),
 			}
+			fmt.Println(roomId);
 			return roomId
 		}
 	}
