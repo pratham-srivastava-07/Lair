@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { MessageCircle, Users, Zap } from 'lucide-react'
 import { useEffect, useState } from "react"
-import { connection, sendMsg } from "@/api"
+import { connection, generateRoomID, sendMsg } from "@/api"
 
 export default function Landing() {
   const [roomId, setRoomId] = useState("")
@@ -31,15 +31,16 @@ async function handleCreateRoom() {
   sendMsg("create_room") // Trigger server-side room creation
 
   // Wait for the server response with the room ID
-  connection((msg: any) => {
-    const parsedMessage = JSON.parse(msg.data)
-    if (parsedMessage.type === 1) { // Assuming type 1 indicates "room created"
-      console.log("Room created with ID:", parsedMessage.body)
-      setRoomId(parsedMessage.body) // Update state with the room ID
-    } else {
-      setMessages((prev) => [...prev, parsedMessage.body])
-    }
-  })
+  // connection((msg: any) => {
+  //   const parsedMessage = JSON.parse(msg.data)
+  //   if (parsedMessage.type === 1) { // Assuming type 1 indicates "room created"
+  //     console.log("Room created with ID:", parsedMessage.body)
+  //     setRoomId(parsedMessage.body) // Update state with the room ID
+  //   } else {
+  //     setMessages((prev) => [...prev, parsedMessage.body])
+  //   }
+  // })
+  setRoomId(generateRoomID());
 }
 
   function handleJoinRoom() {

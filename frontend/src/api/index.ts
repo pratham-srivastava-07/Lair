@@ -28,4 +28,17 @@ let sendMsg = (msg: string) => {
     socket.send(msg)
 }
 
-export {connection, sendMsg}
+function generateRoomID() {
+    const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    const length = 5;
+    let result = "";
+  
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * charset.length);
+      result += charset[randomIndex];
+    }
+  
+    return result;
+  }
+
+export {connection, sendMsg, generateRoomID}
