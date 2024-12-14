@@ -7,44 +7,24 @@ import { connection, generateRoomID, sendMsg } from "@/api"
 
 export default function Landing() {
   const [roomId, setRoomId] = useState("")
-  const [username, setUsername] = useState("")
+  const [sender, setSEnder] = useState("")
   const [messages, setMessages] = useState<string[]>([]);
+  const [flag, setFlag] = useState(false)
 
   useEffect(() => {
       connection((msg: string) => {
         setMessages((prev: any) => [...prev, msg])
       })
   }, [])
-//   useEffect(() => {
-//     connection((msg: any) => {
-//         const parsedMessage = JSON.parse(msg.data);
-//         if (parsedMessage.type === "room_created") {
-//             console.log("Room created with ID:", parsedMessage.body);
-//             setRoomId(parsedMessage.body); // Update the state with the room ID
-//         } else {
-//             setMessages((prev) => [...prev, parsedMessage.body]);
-//         }
-//     });
-// }, []);
 
 async function handleCreateRoom() {
   sendMsg("create_room") // Trigger server-side room creation
-
-  // Wait for the server response with the room ID
-  // connection((msg: any) => {
-  //   const parsedMessage = JSON.parse(msg.data)
-  //   if (parsedMessage.type === 1) { // Assuming type 1 indicates "room created"
-  //     console.log("Room created with ID:", parsedMessage.body)
-  //     setRoomId(parsedMessage.body) // Update state with the room ID
-  //   } else {
-  //     setMessages((prev) => [...prev, parsedMessage.body])
-  //   }
-  // })
+  setFlag(true)
   setRoomId(generateRoomID());
 }
 
   function handleJoinRoom() {
-    sendMsg(`Room id ${roomId}`)
+    sendMsg(`Room id ${roomId}, Sender: ${sender}`)
   }
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary">
@@ -81,8 +61,8 @@ async function handleCreateRoom() {
                 placeholder="Enter Username (max 10 characters)" 
                 className="text-center"
                 maxLength={10}
-                value={username}
-                onChange={(e: any) => setUsername(e.target.value)}
+                value={sender}
+                onChange={(e: any) => setSEnder(e.target.value)}
               />
               <div className="space-y-2">
                 <Button className="w-full" size="lg" onClick={handleJoinRoom}>
@@ -104,6 +84,9 @@ async function handleCreateRoom() {
               </div>
             </CardContent>
           </Card>
+          <div>
+            {flag && <div>{roomId}</div>}
+          </div>
         </div>
       </div>
 
