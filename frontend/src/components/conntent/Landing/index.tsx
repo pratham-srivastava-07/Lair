@@ -4,27 +4,48 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { MessageCircle, Users, Zap } from 'lucide-react'
 import { useEffect, useState } from "react"
 import { connection, generateRoomID, sendMsg } from "@/api"
+import { useNavigate } from "react-router-dom"
+import { toast } from "@/hooks/use-toast"
 
 export default function Landing() {
   const [roomId, setRoomId] = useState("")
   const [sender, setSEnder] = useState("")
   const [messages, setMessages] = useState<string[]>([]);
   const [flag, setFlag] = useState(false)
+  const navigate = useNavigate()
 
   useEffect(() => {
       connection((msg: string) => {
         setMessages((prev: any) => [...prev, msg])
       })
   }, [])
-
-async function handleCreateRoom() {
-  sendMsg("create_room") // Trigger server-side room creation
-  setFlag(true)
-  setRoomId(generateRoomID());
-}
+  async function handleCreateRoom() {
+    sendMsg("create_room")
+    const newRoomId = generateRoomID()
+    setFlag(true)
+    setRoomId(newRoomId)
+    
+    if (sender) {
+      navigate(`/chat?roomId=${newRoomId}&sender=${sender}`)
+    } else {
+      toast({
+        title: "ERROR",
+        description: "Please enter a username"
+      })
+    }
+  }
 
   function handleJoinRoom() {
+    if (!roomId || !sender) {
+      toast({
+        title: "ERROR",
+        description: "Please enter both room ID and username"
+      })
+      return
+    }
+
     sendMsg(`Room id ${roomId}, Sender: ${sender}`)
+    navigate(`/chat?roomId=${roomId}&sender=${sender}`)
   }
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary">
