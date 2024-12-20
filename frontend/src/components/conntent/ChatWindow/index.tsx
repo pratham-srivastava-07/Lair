@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 
-
 interface ChatRoomProps {
   roomId: string
   sender: string
@@ -40,57 +39,59 @@ export default function ChatRoom({ roomId, sender, messages, onSendMessage }: Ch
   return (
     <div className="flex flex-col h-screen bg-black text-white">
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
-        <div className="flex flex-col">
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-semibold">Room - {roomId}</h1>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-white/70 hover:text-white"
-              onClick={copyRoomId}
-            >
-              <Copy className="h-4 w-4" />
-              <span className="sr-only">Copy room ID</span>
-            </Button>
-          </div>
-          <div className="flex items-center gap-2 text-sm">
-            <span>Status:</span>
-            <span className="text-emerald-500">Connected</span>
-          </div>
+      <div className="flex flex-col items-center justify-center py-4">
+        <div className="flex items-center gap-2">
+          <h1 className="text-xl font-normal">Room - {roomId}</h1>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-white/70 hover:text-white"
+            onClick={copyRoomId}
+          >
+            <Copy className="h-4 w-4" />
+            <span className="sr-only">Copy room ID</span>
+          </Button>
+        </div>
+        <div className="flex items-center gap-2 text-sm mt-1">
+          <span className="text-white/70">Status : </span>
+          <span className="text-emerald-500">Connected</span>
         </div>
       </div>
 
       {/* Chat Area */}
-      <div className="flex-1 overflow-auto p-4 space-y-4">
-        {messages.map((msg, i) => (
-          <div
-            key={i}
-            className={cn(
-              "max-w-[80%] rounded-lg p-3",
-              msg.sender === sender ? "ml-auto bg-blue-500" : "bg-white/10"
-            )}
-          >
-            <div className="font-bold">{msg.sender}</div>
-            <div>{msg.content}</div>
+      <div className="flex-1 mx-auto w-full max-w-3xl px-4">
+        <div className="h-full border border-white/10 rounded-sm overflow-auto">
+          <div className="p-4 space-y-4">
+            {messages.map((msg, i) => (
+              <div
+                key={i}
+                className={cn(
+                  "max-w-[80%] rounded p-3",
+                  msg.sender === sender ? "ml-auto bg-white/10" : "bg-white/10"
+                )}
+              >
+                <div className="font-medium text-sm">{msg.sender}</div>
+                <div className="text-white/90">{msg.content}</div>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
 
       {/* Message Input */}
-      <div className="p-4 border-t border-white/10">
+      <div className="p-4 mx-auto w-full max-w-3xl">
         <div className="flex gap-2">
           <Textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyPress}
             placeholder="Send Message"
-            className="min-h-[44px] bg-transparent border-white/20 focus-visible:ring-white/20"
+            className="min-h-[44px] bg-transparent border-white/10 focus-visible:ring-0 focus-visible:ring-offset-0 resize-none"
           />
           <Button
             onClick={handleSendMessage}
             size="icon"
-            className="h-11 w-11 shrink-0 bg-white/10 hover:bg-white/20"
+            className="h-11 w-11 shrink-0 bg-black hover:bg-white/10 border border-white/10"
           >
             <Send className="h-4 w-4" />
             <span className="sr-only">Send message</span>
@@ -100,4 +101,3 @@ export default function ChatRoom({ roomId, sender, messages, onSendMessage }: Ch
     </div>
   )
 }
-
