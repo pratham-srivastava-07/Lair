@@ -59,7 +59,7 @@ export default function ChatRoom({ roomId, sender, messages, onSendMessage }: Ch
       </div>
 
       {/* Chat Area */}
-      <div className="flex-1 mx-auto w-full max-w-3xl px-4">
+      <div className="flex-1 mx-auto w-full max-w-3xl px-4 border">
         <div className="h-full border border-white/10 rounded-sm overflow-auto">
           <div className="p-4 space-y-4">
             {messages.map((msg, i) => (
