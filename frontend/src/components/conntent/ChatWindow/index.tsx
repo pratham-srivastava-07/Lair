@@ -7,11 +7,11 @@ import { cn } from '@/lib/utils'
 interface ChatRoomProps {
   roomId: string
   sender: string
-  messages: { sender: string; content: string }[]
+  messages?: { sender: string; content: string }[]
   onSendMessage: (message: string) => void
 }
 
-export default function ChatRoom({ roomId, sender, messages, onSendMessage }: ChatRoomProps) {
+export default function ChatRoom({ roomId, sender, messages = [], onSendMessage }: ChatRoomProps) {
   const [message, setMessage] = useState('')
 
   const copyRoomId = async () => {
@@ -24,7 +24,7 @@ export default function ChatRoom({ roomId, sender, messages, onSendMessage }: Ch
 
   const handleSendMessage = () => {
     if (message.trim()) {
-      onSendMessage(message)
+      onSendMessage(message.trim())
       setMessage('')
     }
   }
@@ -67,10 +67,12 @@ export default function ChatRoom({ roomId, sender, messages, onSendMessage }: Ch
                 key={i}
                 className={cn(
                   "max-w-[80%] rounded p-3",
-                  msg.sender === sender ? "ml-auto bg-white/10" : "bg-white/10"
+                  msg.sender === sender 
+                    ? "ml-auto bg-white/20" // Sent messages (right side)
+                    : "mr-auto bg-white/10" // Received messages (left side)
                 )}
               >
-                <div className="font-medium text-sm">{msg.sender}</div>
+                <div className="font-medium text-sm text-white/80">{msg.sender}</div>
                 <div className="text-white/90">{msg.content}</div>
               </div>
             ))}

@@ -35,6 +35,31 @@ export default function Landing() {
     }
   }
 
+  const copyRoomId = async () => {
+    if (!roomId) {
+      toast({
+        title: "ERROR",
+        description: "No Room ID to copy"
+      });
+      return;
+    }
+  
+    try {
+      await navigator.clipboard.writeText(roomId);
+      toast({
+        title: "Success",
+        description: "Room ID copied to clipboard!"
+      });
+    } catch (err) {
+      console.error("Failed to copy Room ID:", err);
+      toast({
+        title: "ERROR",
+        description: "Failed to copy Room ID"
+      });
+    }
+  };
+  
+
   function handleJoinRoom() {
     if (!roomId || !sender) {
       toast({
@@ -75,7 +100,6 @@ export default function Landing() {
                 placeholder="Enter Room ID (5 characters)" 
                 className="text-center"
                 maxLength={5}
-                value={roomId}
                 onChange={(e: any) => setRoomId(e.target.value)}
               />
               <Input 
@@ -106,7 +130,20 @@ export default function Landing() {
             </CardContent>
           </Card>
           <div>
-            {flag && <div>{roomId}</div>}
+          {flag && (
+              <div className="flex items-center justify-center gap-4">
+                <div className="text-lg font-medium">{roomId}</div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 bg-black text-white"
+                  onClick={copyRoomId}
+                >
+                  Copy
+                </Button>
+              </div>
+          )}
+
           </div>
         </div>
       </div>
