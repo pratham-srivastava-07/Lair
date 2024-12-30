@@ -1,66 +1,92 @@
+import  { useEffect, useState, useCallback } from 'react'
+import { v4 as uuidv4 } from 'uuid'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { connection, sendMsg } from '@/api'
 import ChatRoom from '@/components/conntent/ChatWindow'
-import { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+
+
+interface Message {
+  id: string
+  type: 'message' | 'join'
+  sender: string
+  content: string
+}
 
 export default function ChatPage() {
   const location = useLocation()
   const navigate = useNavigate()
-  const [messages, setMessages] = useState<{ sender: string; content: string }[]>([])
-
-  const searchParams = new URLSearchParams(location.search)
-  const roomId = searchParams.get('roomId')
-  const sender = searchParams.get('sender')
+  const [messages, setMessages] = useState<Message[]>([])
+  const [roomId, setRoomId] = useState<string | null>(null)
+  const [sender, setSender] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!roomId || !sender) {
+    const searchParams = new URLSearchParams(location.search)
+    const roomIdParam = searchParams.get('roomId')
+    const senderParam = searchParams.get('sender')
+
+    if (!roomIdParam || !senderParam) {
       navigate('/')
+      return
     }
-  }, [roomId, sender, navigate])
+
+    setRoomId(roomIdParam)
+    setSender(senderParam)
+  }, [location, navigate])
+
+  const handleMessage = useCallback((msg: MessageEvent) => {
+    try {
+      const parsedData = JSON.parse(msg.data)
+      const messageData = JSON.parse(parsedData.body)
+
+      if (messageData.roomId === roomId) {
+        setMessages(prev => {
+          const newMessage: Message = {
+            id: uuidv4(),
+            type: messageData.type,
+            sender: messageData.sender,
+            content: messageData.type === 'join' 
+              ? `${messageData.sender} joined the room`
+              : messageData.content
+          }
+          // Check if the message is already in the state
+          const messageExists = prev.some(m =>
+            m.sender === newMessage.sender &&
+            m.content === newMessage.content &&
+            m.type === newMessage.type
+          )
+
+          if (!messageExists) {
+            return [...prev, newMessage]
+          }
+          return prev
+        })
+      }
+    } catch (error) {
+      console.error('Failed to parse message:', error)
+    }
+  }, [roomId])
 
   useEffect(() => {
-    const handleMessage = (msg: MessageEvent) => {
-      try {
-        const parsedData = JSON.parse(msg.data)
-        const messageData = JSON.parse(parsedData.body)
-        
-        if (messageData.type === 'message' && messageData.roomId === roomId) {
-          setMessages(prev => [...prev, {
-            sender: messageData.sender,
-            content: messageData.content
-          }])
-        }
-      } catch (error) {
-        console.error('Failed to parse message:', error)
-      }
-    }
-
     if (roomId && sender) {
-      connection(handleMessage)
+      const cleanup = connection(handleMessage)
+
       // Send a message to join the room
       sendMsg(JSON.stringify({ type: 'join', roomId, sender }))
-    }
 
-    return () => {
-      // Clean up the connection if needed
-      if (roomId && sender) {
+      return () => {
+        // Clean up the connection and leave the room
+        // cleanup()
         sendMsg(JSON.stringify({ type: 'leave', roomId, sender }))
       }
     }
-  }, [roomId, sender])
+  }, [roomId, sender, handleMessage])
 
-  const handleSendMessage = (message: string) => {
+  const handleSendMessage = useCallback((message: string) => {
     if (roomId && sender && message.trim()) {
       const messageObj = { type: 'message', roomId, sender, content: message }
       sendMsg(JSON.stringify(messageObj))
-      
-      // Add the sent message to local state immediately
-      setMessages(prev => [...prev, {
-        sender: sender,
-        content: message
-      }])
     }
-  }
+  }, [roomId, sender])
 
   if (!roomId || !sender) {
     return null

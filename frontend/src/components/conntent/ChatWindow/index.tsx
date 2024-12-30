@@ -1,18 +1,30 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Copy, Send } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 
+interface Message {
+  id: string
+  type: 'message' | 'join'
+  sender: string
+  content: string
+}
+
 interface ChatRoomProps {
   roomId: string
   sender: string
-  messages?: { sender: string; content: string }[]
+  messages: Message[]
   onSendMessage: (message: string) => void
 }
 
-export default function ChatRoom({ roomId, sender, messages = [], onSendMessage }: ChatRoomProps) {
+export default function ChatRoom({ roomId, sender, messages, onSendMessage }: ChatRoomProps) {
   const [message, setMessage] = useState('')
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
 
   const copyRoomId = async () => {
     try {
@@ -62,20 +74,31 @@ export default function ChatRoom({ roomId, sender, messages = [], onSendMessage 
       <div className="flex-1 mx-auto w-full max-w-3xl px-4 border">
         <div className="h-full border border-white/10 rounded-sm overflow-auto">
           <div className="p-4 space-y-4">
-            {messages.map((msg, i) => (
+            {messages.map((msg) => (
               <div
-                key={i}
+                key={msg.id}
                 className={cn(
                   "max-w-[80%] rounded p-3",
-                  msg.sender === sender 
-                    ? "ml-auto bg-white/20" // Sent messages (right side)
-                    : "mr-auto bg-white/10" // Received messages (left side)
+                  msg.type === 'join' 
+                    ? "mx-auto rounded-full w-1/2 bg-gray-800 text-center" 
+                    : msg.sender === sender 
+                      ? "ml-auto bg-white/20" 
+                      : "mr-auto bg-white/10"
                 )}
               >
-                <div className="font-medium text-sm text-white/80">{msg.sender}</div>
-                <div className="text-white/90">{msg.content}</div>
+                {msg.type === 'join' ? (
+                  <div className="text-gray-400 text-sm">{msg.content}</div>
+                ) : (
+                  <>
+                    <div className="font-medium text-sm text-white/80">
+                      {msg.sender === sender ? 'You' : msg.sender}
+                    </div>
+                    <div className="text-white/90">{msg.content}</div>
+                  </>
+                )}
               </div>
             ))}
+            <div ref={messagesEndRef} />
           </div>
         </div>
       </div>
@@ -103,3 +126,4 @@ export default function ChatRoom({ roomId, sender, messages = [], onSendMessage 
     </div>
   )
 }
+
