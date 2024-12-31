@@ -78,7 +78,7 @@ export default function Landing() {
       <div className="container px-4 py-16 md:py-24 lg:py-32">
         <div className="flex flex-col items-center text-center space-y-8">
           <div className="space-y-4">
-            <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
+            <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl text-black">
               Room Chat
               <MessageCircle className="inline-block ml-4 size-12 md:size-16" />
             </h1>
@@ -131,7 +131,7 @@ export default function Landing() {
           </Card>
           <div>
           {flag && (
-              <div className="flex items-center justify-center gap-4">
+              <div className="flex items-center justify-center gap-4 text-black">
                 <div className="text-lg font-medium">{roomId}</div>
                 <Button
                   variant="ghost"
