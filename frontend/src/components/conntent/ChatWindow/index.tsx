@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 
 interface Message {
   id: string
-  type: 'message' | 'join'
+  type: 'message' | 'join' | 'leave'
   sender: string
   content: string
 }
@@ -78,15 +78,15 @@ export default function ChatRoom({ roomId, sender, messages, onSendMessage }: Ch
               <div
                 key={msg.id}
                 className={cn(
-                  "max-w-[80%] rounded p-3",
-                  msg.type === 'join' 
+                  "max-w-[50%] rounded p-3",
+                  msg.type === 'join' || msg.type === 'leave'
                     ? "mx-auto rounded-full w-1/2 bg-gray-800 text-center" 
                     : msg.sender === sender 
                       ? "ml-auto bg-white/20" 
                       : "mr-auto bg-white/10"
                 )}
               >
-                {msg.type === 'join' ? (
+                {msg.type === 'join' || msg.type === 'leave' ? (
                   <div className="text-gray-400 text-sm">{msg.content}</div>
                 ) : (
                   <>

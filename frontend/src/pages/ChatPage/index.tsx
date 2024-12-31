@@ -1,4 +1,4 @@
-import  { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { connection, sendMsg } from '@/api'
@@ -7,7 +7,7 @@ import ChatRoom from '@/components/conntent/ChatWindow'
 
 interface Message {
   id: string
-  type: 'message' | 'join'
+  type: 'message' | 'join' | 'leave'
   sender: string
   content: string
 }
@@ -46,6 +46,8 @@ export default function ChatPage() {
             sender: messageData.sender,
             content: messageData.type === 'join' 
               ? `${messageData.sender} joined the room`
+              : messageData.type === 'leave'
+              ? `${messageData.sender} left the chat`
               : messageData.content
           }
           // Check if the message is already in the state
@@ -70,12 +72,11 @@ export default function ChatPage() {
     if (roomId && sender) {
       const cleanup = connection(handleMessage)
 
-      // Send a message to join the room
+      
       sendMsg(JSON.stringify({ type: 'join', roomId, sender }))
 
       return () => {
-        // Clean up the connection and leave the room
-        // cleanup()
+        
         sendMsg(JSON.stringify({ type: 'leave', roomId, sender }))
       }
     }
@@ -101,3 +102,4 @@ export default function ChatPage() {
     />
   )
 }
+
