@@ -120,3 +120,25 @@ func (rm *RoomManager) BroadcastToAll(roomId string, message Message) error {
 	}
 	return nil
 }
+
+// return back already done chat
+
+func (rm* RoomManager) PersistChat(roomId string, messages Message) error {
+	rm.mu.Lock()
+
+	room, exists := rm.Rooms[roomId]
+	rm.mu.Unlock()
+
+	if !exists {
+		return fmt.Errorf("room %s does not exist", roomId)
+	}
+
+	room.mu.Lock()
+	defer room.mu.Unlock()
+
+	for client := range room.Clients {
+		client.mu.Lock()
+		// give out already done chats on reload
+	}
+	return fmt.Errorf("")
+}
