@@ -57,7 +57,7 @@ export default function ChatRoom({ roomId, sender, messages, onSendMessage }: Ch
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-white/70 hover:text-white"
+            className="h-8 w-8 text-white/70 "
             onClick={copyRoomId}
           >
             <Copy className="h-4 w-4" />

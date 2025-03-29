@@ -1,6 +1,6 @@
 // import WebSocket from "ws";
 
-const socket = new WebSocket('ws://localhost:9000/ws')
+const socket = new WebSocket('wss://lair-production.up.railway.app')
 
 let connection = (cb: (m: any) => void) => {
     console.log('connecting')

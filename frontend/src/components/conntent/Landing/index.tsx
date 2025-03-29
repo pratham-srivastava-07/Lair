@@ -10,7 +10,7 @@ import { toast } from "@/hooks/use-toast"
 export default function Landing() {
   const [roomId, setRoomId] = useState("")
   const [sender, setSEnder] = useState("")
-  const [messages, setMessages] = useState<string[]>([]);
+  const [, setMessages] = useState<string[]>([]);
   const [flag, setFlag] = useState(false)
   const navigate = useNavigate()
 
@@ -79,8 +79,8 @@ export default function Landing() {
         <div className="flex flex-col items-center text-center space-y-8">
           <div className="space-y-4">
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl text-black">
-              Room Chat
-              <MessageCircle className="inline-block ml-4 size-12 md:size-16" />
+              Lair
+              <MessageCircle className="inline-block ml-4 size-12 md:size-16 mb-5" />
             </h1>
             <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
               Connect instantly with friends and colleagues. Create or join rooms for seamless real-time communication.
@@ -134,9 +134,9 @@ export default function Landing() {
               <div className="flex items-center justify-center gap-4 text-black">
                 <div className="text-lg font-medium">{roomId}</div>
                 <Button
-                  variant="ghost"
+                  // variant=""
                   size="icon"
-                  className="h-8 w-8 bg-black text-white"
+                  className="h-8 w-8 bg-black text-white px-7 py-2"
                   onClick={copyRoomId}
                 >
                   Copy

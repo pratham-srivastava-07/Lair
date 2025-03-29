@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { connection, sendMsg } from '@/api'
+import {  sendMsg } from '@/api'
 import ChatRoom from '@/components/conntent/ChatWindow'
 
 
@@ -70,7 +70,7 @@ export default function ChatPage() {
 
   useEffect(() => {
     if (roomId && sender) {
-      const cleanup = connection(handleMessage)
+      // const cleanup = connection(handleMessage)
 
       
       sendMsg(JSON.stringify({ type: 'join', roomId, sender }))
