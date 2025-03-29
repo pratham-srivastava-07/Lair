@@ -1,32 +1,40 @@
+// Remove this import as it's for Node.js
 // import WebSocket from "ws";
 
-const socket = new WebSocket('wss://lair-production.up.railway.app')
+// Use the browser's native WebSocket
+const socket = new WebSocket('https://lair-production.up.railway.app');
 
 let connection = (cb: (m: any) => void) => {
-    console.log('connecting')
+    console.log('connecting');
 
     socket.onopen = () => {
-        console.log("socket connected successfully")
-    }
+        console.log("socket connected successfully");
+    };
 
     socket.onmessage = (msg) => {
-        console.log("Message from socket", msg)
-        cb(msg)
-    }
+        console.log("Message from socket", msg);
+        cb(msg);
+    };
 
-    socket.onclose = () => {
-        console.log("socket disconnected")
-    }
+    socket.onclose = (event) => {
+        // Add event details for better debugging
+        console.log("socket disconnected", event.code, event.reason);
+    };
 
     socket.onerror = (e) => {
-        console.log("Socket error", e)
-    }
+        console.log("Socket error", e);
+    };
 };
 
 let sendMsg = (msg: string) => {
-    console.log("Message sent: ", msg)
-    socket.send(msg)
-}
+    // Add check to ensure socket is open before sending
+    if (socket.readyState === WebSocket.OPEN) {
+        console.log("Message sent: ", msg);
+        socket.send(msg);
+    } else {
+        console.error("Socket not open. Current state:", socket.readyState);
+    }
+};
 
 function generateRoomID() {
     const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -39,6 +47,6 @@ function generateRoomID() {
     }
   
     return result;
-  }
+}
 
-export {connection, sendMsg, generateRoomID}
+export {connection, sendMsg, generateRoomID};
