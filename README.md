@@ -9,10 +9,6 @@
 
 **Lair** is a lightning-fast WebSocket backend written in Go, engineered for developers who demand exceptional real-time communication capabilities with uncompromising performance.
 
-<p align="center">
-  <img src="/api/placeholder/800/400" alt="Lair Architecture" />
-</p>
-
 ## ✨ Key Features
 
 - **Blazing Fast Performance**: Built with Go for optimal speed and resource efficiency
